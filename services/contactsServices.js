@@ -1,48 +1,34 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-
-const contactsPat = path.join(process.cwd(), "./db/contacts.json");
-
-async function readContacts() {
-  const data = await fs.readFile(contactsPat, { encoding: "utf-8" });
-  return JSON.parse(data);
-}
-
-async function writeContacts(newContact) {
-  return fs.writeFile(contactsPat, JSON.stringify(newContact, undefined, 2));
-}
+import Contact from "../models/contact.js";
 
 export async function listContacts() {
-  return await readContacts();
+  const data = await Contact.find();
+  return data;
 }
 
 export async function getContactById(contactId) {
-  const contacts = await readContacts();
-  return contacts.find((contact) => contact.id === contactId) ?? null;
+  const contact = await Contact.findById(contactId);
+  return contact;
 }
 
 export async function removeContact(contactId) {
-  const contacts = await readContacts();
-  const index = contacts.findIndex((contact) => contact.id === contactId);
-  if (index < 0) return null;
-  const removedContact = contacts[index];
-  contacts.splice(index, 1);
-  await writeContacts(contacts);
-  return removedContact;
+  await Contact.findByIdAndDelete(contactId);
 }
 
 export async function addContact(newContact) {
-  const contacts = await readContacts();
-  contacts.push(newContact);
-  await writeContacts(contacts);
-  return newContact;
+  const cratedContact = await Contact.create(newContact);
+  return cratedContact;
 }
 
 export async function updateContacts(contactId, body) {
-  const contacts = await readContacts();
-  const index = contacts.findIndex((contact) => contact.id === contactId);
-  const updatedContact = { ...contacts[index], ...body };
-  contacts[index] = updatedContact;
-  await writeContacts(contacts);
-  return updatedContact;
+  const contact = await Contact.findByIdAndUpdate(contactId, body, {
+    new: true,
+  });
+  return contact;
+}
+
+export async function updateStatusContact(contactId, body) {
+  const contact = await Contact.findByIdAndUpdate(contactId, body, {
+    new: true,
+  });
+  return contact;
 }

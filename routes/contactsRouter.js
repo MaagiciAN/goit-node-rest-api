@@ -5,11 +5,13 @@ import {
   deleteContact,
   createContact,
   updateContact,
+  updateContactFavorite,
 } from "../controllers/contactsControllers.js";
 import validateBody from "../helpers/validateBody.js";
 import {
   createContactSchema,
   updateContactSchema,
+  updateContactFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
 
 const contactsRouter = express.Router();
